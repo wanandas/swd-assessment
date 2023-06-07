@@ -1,13 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface IFormState {
+// form dayjs type
+export interface IFormState {
   id?: number;
   nameTitle?: string;
   firstName?: string;
   lastName?: string;
-  dateOfBirth?: string;
+  dateOfBirth?: any;
   nationality?: string;
-  numberOfDependents?: string;
+  idCardNumber?: string;
   sex?: string;
   telephoneNumber?: string;
   travelBookingNumber?: string;
@@ -26,7 +27,7 @@ const initialState: IFormSliceState = {
     lastName: "",
     dateOfBirth: "",
     nationality: "",
-    numberOfDependents: "",
+    idCardNumber: "",
     sex: "",
     telephoneNumber: "",
     travelBookingNumber: "",
@@ -45,13 +46,26 @@ const formSlice = createSlice({
     clearForm: (state) => {
       state.form = initialState.form;
     },
-    addTableData: (state, action: PayloadAction<IFormState>) => {
-      const id = Math.floor(Math.random() * 1000000000);
-      const newEntry: IFormState = {
-        ...action.payload,
-        id,
-      };
-      state.tableData.push(newEntry);
+    addOrEditTableData: (state, action: PayloadAction<IFormState>) => {
+      if (action.payload.id) {
+        const index = state.tableData.findIndex(
+          (item) => item.id === action.payload.id
+        );
+        state.tableData[index] = action.payload;
+      } else {
+        const id = Math.floor(Math.random() * 1000000000);
+        const newEntry: IFormState = {
+          ...action.payload,
+          id,
+        };
+        state.tableData.push(newEntry);
+      }
+    },
+    getTableDataForEdit: (state, action: PayloadAction<{ id: number }>) => {
+      const index = state.tableData.findIndex(
+        (item) => item.id === action.payload.id
+      );
+      state.form = state.tableData[index];
     },
     deleteTableDataById: (state, action: PayloadAction<{ id: number[] }>) => {
       state.tableData = state.tableData.filter(
@@ -61,6 +75,11 @@ const formSlice = createSlice({
   },
 });
 
-export const { setForm, addTableData, deleteTableDataById, clearForm } =
-  formSlice.actions;
+export const {
+  setForm,
+  addOrEditTableData,
+  getTableDataForEdit,
+  deleteTableDataById,
+  clearForm,
+} = formSlice.actions;
 export const formReducer = formSlice.reducer;

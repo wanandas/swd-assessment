@@ -7,14 +7,26 @@ const resources = {
   th: translation.th,
 };
 
-i18n.use(initReactI18next).init({
-  resources: resources,
-  lng: "en",
-  fallbackLng: "en",
+const fallbackLanguage = "en";
+const savedLanguage = localStorage.getItem("language");
 
-  interpolation: {
-    escapeValue: false,
-  },
-});
+const i18nInstance = i18n.createInstance();
 
-export default i18n;
+i18nInstance
+  .use(initReactI18next)
+  .init({
+    resources,
+    lng: savedLanguage || fallbackLanguage,
+    fallbackLng: fallbackLanguage,
+    interpolation: {
+      escapeValue: false,
+    },
+  })
+  .then(() => {
+    // Set the selected language in localStorage
+    if (!savedLanguage) {
+      localStorage.setItem("language", i18nInstance.language);
+    }
+  });
+
+export default i18nInstance;
