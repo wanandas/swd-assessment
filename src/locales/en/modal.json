@@ -1,0 +1,7 @@
+{
+  "delete": {
+    "title": "Delete content",
+    "deleteAllContent": "Are you sure you want to delete?",
+    "deleteContent": "Are you sure you want to delete {0}?"
+  }
+}

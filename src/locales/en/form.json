@@ -1,0 +1,20 @@
+{
+  "name": "Name",
+  "titleName": "Title Name",
+  "firstName": "First Name",
+  "lastName": "Last Name",
+  "dateOfBirth": "Birth Date",
+  "nationality": "Nationality",
+  "idCardNumber": "ID Card Number",
+  "sex": "Sex",
+  "mobileNumber": "Mobile number",
+  "passportId": "Passport ID",
+  "salary": "Expect Salary",
+  "action": "Action",
+  "error": {
+    "require": "Please fill in this field",
+    "idCardNumber": "Please fill in ID Card Number (13 digits)",
+    "mobileNumber": "Please fill in Mobile Number",
+    "onlyNumber": "Please fill in only number"
+  }
+}

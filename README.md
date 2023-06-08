@@ -21,3 +21,4 @@ This is a simple form application built with React, Redux, and Ant Design.
 - Redux Toolkit
 - Redux Persist
 - Ant Design
+- Emotion Styled Components (for styling)

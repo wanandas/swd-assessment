@@ -5,22 +5,21 @@ import { I18nextProvider } from "react-i18next";
 import i18n from "./core/config/i18n.ts";
 import { Provider } from "react-redux";
 import { PersistGate } from "redux-persist/integration/react";
-import { Test1 } from "./pages";
-import Test2 from "./pages/Test2.tsx";
+import { Home, Test1, Test2 } from "./pages";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { persistor, store } from "./core/store/store.ts";
 
 const router = [
   {
     path: "/",
+    Component: Home,
+  },
+  {
+    path: "/test-1",
     Component: Test1,
   },
   {
-    path: "/test1",
-    Component: Test1,
-  },
-  {
-    path: "/test2",
+    path: "/test-2",
     Component: Test2,
   },
 ];

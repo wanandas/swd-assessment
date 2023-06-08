@@ -1,130 +1,116 @@
 import { useTranslation } from "react-i18next";
 import { LayoutMain } from "../components/templates";
-import { Space, Form, Input, DatePicker, Select, Button } from "antd";
+import { Space, Form } from "antd";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../core/store/store";
 import {
   IFormState,
   addOrEditTableData,
   clearForm,
+  deleteTableDataById,
   getTableDataForEdit,
   setForm,
 } from "../core/store/slice/form";
-import { useCallback } from "react";
-import { IdCardInput } from "../components/Atoms";
+import { useCallback, useMemo } from "react";
 import dayjs from "dayjs";
-
-const { Item } = Form;
+import { FormItems } from "../components/Organisms";
+import styled from "@emotion/styled";
+import TableCustom from "../components/Organisms/TebleCutom/TableCustom";
 
 const Test2 = () => {
   const { t } = useTranslation();
 
-  const { dateOfBirth, ...formInit } = useSelector(
+  const { dateOfBirth, idCardNumber, ...formInit } = useSelector(
     (state: RootState) => state.form
   );
+  const tableData = useSelector((state: RootState) => state.tableData);
+
   const dispatch = useDispatch();
   const [form] = Form.useForm<IFormState>();
 
-  const onGetTableDataForEdit = useCallback(async () => {
-    await dispatch(getTableDataForEdit({ id: 225236324 }));
+  // form
+  const changeValueForm = (v: IFormState) => {
+    if (v.dateOfBirth) {
+      dispatch(setForm({ dateOfBirth: v.dateOfBirth.format("DD/MM/YYYY") }));
+    } else {
+      dispatch(setForm(v));
+    }
+  };
+  const onFinish = async (v: IFormState) => {
+    await dispatch(
+      addOrEditTableData({ ...v, id: formInit?.id, idCardNumber })
+    );
+    await dispatch(clearForm());
     form.resetFields();
-  }, [dispatch, form]);
+  };
+
+  // table
+  const onGetTableDataForEdit = useCallback(
+    async (id: string | number) => {
+      await dispatch(getTableDataForEdit({ id: Number(id) }));
+      form.resetFields();
+    },
+    [dispatch, form]
+  );
+
+  const onDeleteTableData = useCallback(
+    async (id: number[]) => {
+      await dispatch(deleteTableDataById({ id }));
+    },
+    [dispatch]
+  );
+
+  const dateOfBirthMemo = useMemo(() => {
+    if (dateOfBirth && dateOfBirth.length === 10) {
+      return dayjs(dateOfBirth, "DD/MM/YYYY");
+    }
+    if (dateOfBirth) {
+      return dayjs(dateOfBirth);
+    }
+    return null;
+  }, [dateOfBirth]);
 
   return (
     <LayoutMain>
-      <h1 onClick={onGetTableDataForEdit}>{t("common.test-2")}</h1>
-      <Space
-        style={{
-          border: "1px solid #000",
-          padding: "1rem",
-          minWidth: "100%",
-        }}
-      >
+      <h1>{t("common.test-2")}</h1>
+      <FormWrapper>
         <Form
-          name="validateOnly"
           layout="vertical"
           autoComplete="off"
           initialValues={{
             ...formInit,
-            idCardNumber: "",
-
-            dateOfBirth: dateOfBirth ? dayjs(dateOfBirth, "DD/MM/YYYY") : null,
+            idCardNumber,
+            dateOfBirth: dateOfBirthMemo,
           }}
           form={form}
-          onValuesChange={(v) => {
-            if (v.dateOfBirth) {
-              dispatch(
-                setForm({ dateOfBirth: v.dateOfBirth.format("DD/MM/YYYY") })
-              );
-            } else {
-              dispatch(setForm(v));
-            }
-          }}
-          onFinish={(v) => {
-            dispatch(addOrEditTableData({ ...v, id: formInit?.id }));
-          }}
+          onValuesChange={changeValueForm}
+          onFinish={onFinish}
         >
-          <Item label="titleName" name="titleName">
-            <Select
-              style={{ width: 120 }}
-              options={[
-                { value: "jack", label: "Jack" },
-                { value: "lucy", label: "Lucy" },
-                { value: "Yiminghe", label: "yiminghe" },
-                { value: "disabled", label: "Disabled", disabled: true },
-              ]}
-            />
-          </Item>
-          <Item name="firstName" label="firstName" rules={[{ required: true }]}>
-            <Input />
-          </Item>
-          <Item name="lastname" label="lastName" rules={[{ required: true }]}>
-            <Input />
-          </Item>
-
-          <Item label="DatePicker" name="dateOfBirth">
-            <DatePicker
-              style={{ width: "100%" }}
-              disabledDate={(current) => current && current > dayjs()}
-              format="DD/MM/YYYY"
-              showToday={false}
-              placeholder="Select date"
-            />
-          </Item>
-          <Item label="nationality">
-            <Select
-              style={{ width: 120 }}
-              options={[
-                { value: "jack", label: "Jack" },
-                { value: "lucy", label: "Lucy" },
-                { value: "Yiminghe", label: "yiminghe" },
-                { value: "disabled", label: "Disabled", disabled: true },
-              ]}
-            />
-          </Item>
-          <Item label="idCard์Number">
-            <IdCardInput
-              onChange={async (v) => {
-                await dispatch(setForm({ idCardNumber: v }));
-              }}
-            />
-          </Item>
-
-          <Item label="Button">
-            <Button
-              onClick={async () => {
-                await dispatch(clearForm());
-                form.resetFields();
-              }}
-            >
-              reset
-            </Button>
-            <Button htmlType="submit">Button</Button>
-          </Item>
+          <FormItems form={form} />
         </Form>
-      </Space>
+      </FormWrapper>
+      <TableCustom
+        onEdit={onGetTableDataForEdit}
+        onDelete={onDeleteTableData}
+        data={tableData}
+      />
     </LayoutMain>
   );
 };
+
+const FormWrapper = styled(Space)`
+  border: 1px solid #000;
+  background-color: #fff;
+  padding: 1rem;
+  margin: 0 auto;
+  border-radius: 8px;
+  margin-bottom: 1rem;
+  & > h1 {
+    text-align: center;
+  }
+  label {
+    font-weight: bold;
+  }
+`;
 
 export default Test2;

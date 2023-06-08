@@ -10,8 +10,8 @@ export interface IFormState {
   nationality?: string;
   idCardNumber?: string;
   sex?: string;
-  telephoneNumber?: string;
-  travelBookingNumber?: string;
+  mobileNumber?: string;
+  passportId?: string;
   salary?: string;
 }
 
@@ -29,8 +29,8 @@ const initialState: IFormSliceState = {
     nationality: "",
     idCardNumber: "",
     sex: "",
-    telephoneNumber: "",
-    travelBookingNumber: "",
+    mobileNumber: "",
+    passportId: "",
     salary: "",
   },
   tableData: [],
