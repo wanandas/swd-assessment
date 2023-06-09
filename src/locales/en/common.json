@@ -2,6 +2,7 @@
   "loading": "Loading Content...",
   "test-1": "Layout management",
   "test-2": "Form Management",
+  "home": "Home",
   "button": {
     "submit": "Submit",
     "reset": "Reset",

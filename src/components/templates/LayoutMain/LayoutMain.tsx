@@ -15,20 +15,28 @@ interface ILayoutMain {
 const LayoutMain = ({ children }: ILayoutMain) => {
   const link = ["test-1", "test-2"];
   const { t } = useTranslation();
+  const router = window.location.pathname.split("/")[1];
 
   return (
     <LayoutWrapper>
       <HeaderWrapper>
-        <Space size={[8, 16]} wrap>
-          {link.map((item) => (
-            <Button key={item} type="primary" href={`/${item}`}>
-              {t(`common.${item}`)}
-            </Button>
-          ))}
-        </Space>
+        {router !== "" && (
+          <Space size={[8, 16]} wrap>
+            {link.map((item) => (
+              <Button key={item} type="primary" href={`/${item}`}>
+                {t(`common.${item}`)}
+              </Button>
+            ))}
+          </Space>
+        )}
         <Buttonlang />
       </HeaderWrapper>
-      <ContentWrapper>{children}</ContentWrapper>
+      <ContentWrapper>
+        {children}
+        <Button type="text">
+          <a href="/">{t(`common.home`)}</a>
+        </Button>
+      </ContentWrapper>
     </LayoutWrapper>
   );
 };
