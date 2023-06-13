@@ -2,7 +2,7 @@ import { useTranslation } from "react-i18next";
 import { LayoutMain } from "../../components/templates";
 import { Space } from "antd";
 import { ButtonShape } from "../../components/Atoms";
-import { useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import { ControlWrapper, GridButtonShapeWrapper } from "./Test1.styled";
 import { shapeGroup, shapeTriangle } from "../../constants/shape";
 
@@ -10,16 +10,18 @@ const Test1 = () => {
   const { t } = useTranslation();
   const [indexArray, setIndexArray] = useState([0, 1, 2, 3, 4, 5]);
 
-  const handleShuffle = () => {
+  const indexMemo = useMemo(() => indexArray, [indexArray]);
+
+  const handleShuffle = useCallback(() => {
     const newArray = [...indexArray];
     for (const i in newArray) {
       const j = Math.floor(Math.random() * Number(i));
       [newArray[i], newArray[j]] = [newArray[j], newArray[i]];
     }
     setIndexArray(newArray);
-  };
+  }, [indexArray]);
 
-  const handleMoveByTriangle = (shape: string) => {
+  const handleMoveByTriangle = useCallback((shape: string) => {
     switch (shape) {
       case "triangle-left":
         setIndexArray((pre) => {
@@ -49,7 +51,7 @@ const Test1 = () => {
       default:
         break;
     }
-  };
+  }, []);
 
   return (
     <LayoutMain>
@@ -69,7 +71,7 @@ const Test1 = () => {
             return (
               <ButtonShape
                 onClick={handleShuffle}
-                order={indexArray[index]}
+                order={indexMemo[index]}
                 width={"150px"}
                 key={index}
                 shape={shape}
